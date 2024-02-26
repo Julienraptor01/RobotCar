@@ -1,9 +1,11 @@
 void setup()
 {
-	printf("Hello, world!\n");
+	Serial.begin(115200);
+	Serial.println("RobotCar Hello World!");
 }
 
 void loop()
 {
-	printf("Hello, world!\n");
+	Serial.println("RobotCar Loop");
+	delay(1000);
 }
