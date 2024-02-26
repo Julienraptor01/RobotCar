@@ -1,4 +1,5 @@
 {
 	"board": "arduino:avr:uno",
-	"programmer": "avrispmkii"
+	"programmer": "avrispmkii",
+	"sketch": "src\\RobotCar\\RobotCar.ino"
 }
