@@ -91,27 +91,58 @@ void stopMotors()
 
 /**
  * @author Julienraptor01
- * @brief Move the robot straight
- * @param time The time to move straight
- * @param speed The speed to move straight
+ * @brief Move straight
+ * @param speed The speed to move at
+ * @param time The delay it should move for in milliseconds
  * @return void
  */
 void straight(int speed, unsigned int time)
 {
-	switch (speed >= 0)
+	move(NULL, speed, 1, time);
+}
+
+/**
+ * @author Julienraptor01
+ * @brief Turn the robot
+ * @param direction The direction where it should move
+ * @param speed The speed to move at
+ * @param ratio The ratio of the speed between the left and right motors
+ * @param time The delay it should move for in milliseconds
+ * @return void
+ */
+void move(bool direction, int speed, int ratio, unsigned int time)
+{
+	switch (((ratio >= 0) << 1) | (direction ^ (speed >= 0)))
 	{
-	case true:
+	case false << 1 | false:
 		digitalWrite(MOTORS_LEFT_BACKWARD, LOW);
-		digitalWrite(MOTORS_RIGHT_BACKWARD, LOW);
+		digitalWrite(MOTORS_RIGHT_FORWARD, LOW);
 		digitalWrite(MOTORS_LEFT_FORWARD, HIGH);
+		digitalWrite(MOTORS_RIGHT_BACKWARD, HIGH);
+		break;
+	case false << 1 | true:
+		digitalWrite(MOTORS_LEFT_FORWARD, LOW);
+		digitalWrite(MOTORS_RIGHT_BACKWARD, LOW);
+		digitalWrite(MOTORS_LEFT_BACKWARD, HIGH);
 		digitalWrite(MOTORS_RIGHT_FORWARD, HIGH);
-	case false:
+		break;
+	case true << 1 | false:
 		digitalWrite(MOTORS_LEFT_FORWARD, LOW);
 		digitalWrite(MOTORS_RIGHT_FORWARD, LOW);
 		digitalWrite(MOTORS_LEFT_BACKWARD, HIGH);
 		digitalWrite(MOTORS_RIGHT_BACKWARD, HIGH);
+		break;
+	case true << 1 | true:
+		digitalWrite(MOTORS_LEFT_BACKWARD, LOW);
+		digitalWrite(MOTORS_RIGHT_BACKWARD, LOW);
+		digitalWrite(MOTORS_LEFT_FORWARD, HIGH);
+		digitalWrite(MOTORS_RIGHT_FORWARD, HIGH);
+		break;
 	}
-	setSpeed(abs(speed), abs(speed));
+	unsigned int cachedSpeed = abs(speed);
+	setSpeed(
+		(direction == LEFT) ? (ratio = 0) ? 0 : cachedSpeed / abs(ratio) : cachedSpeed,
+		(direction == RIGHT) ? (ratio = 0) ? 0 : cachedSpeed / abs(ratio) : cachedSpeed);
 	delay(time);
 	stopMotors();
 }
@@ -119,29 +150,12 @@ void straight(int speed, unsigned int time)
 /**
  * @author Julienraptor01
  * @brief Rotate the robot on itself
- * @param direction The direction to rotate
- * @param speed The speed to rotate
- * @param time The time to rotate
+ * @param direction The direction where it should rotate
+ * @param speed The speed to rotate at
+ * @param time The delay it should rotate for in milliseconds
  * @return void
  */
 void rotate(bool direction, unsigned int speed, unsigned int time)
 {
-	switch (direction)
-	{
-	case LEFT:
-		digitalWrite(MOTORS_LEFT_FORWARD, LOW);
-		digitalWrite(MOTORS_RIGHT_BACKWARD, LOW);
-		digitalWrite(MOTORS_LEFT_BACKWARD, HIGH);
-		digitalWrite(MOTORS_RIGHT_FORWARD, HIGH);
-		break;
-	case RIGHT:
-		break;
-		digitalWrite(MOTORS_LEFT_BACKWARD, LOW);
-		digitalWrite(MOTORS_RIGHT_FORWARD, LOW);
-		digitalWrite(MOTORS_LEFT_FORWARD, HIGH);
-		digitalWrite(MOTORS_RIGHT_BACKWARD, HIGH);
-	}
-	setSpeed(speed, speed);
-	delay(time);
-	stopMotors();
+	move(direction, speed, -1, time);
 }

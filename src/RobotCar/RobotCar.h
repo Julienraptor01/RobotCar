@@ -20,6 +20,7 @@ void setSpeedLeft(int speedLeft = 0);
 void setSpeedRight(int speedRight = 0);
 void stopMotors();
 void straight(int speed = 0, unsigned int time = 0);
+void move(bool direction = false, int speed = 0, int ratio = 0, unsigned int time = 0);
 void rotate(bool direction = false, unsigned int speed = 0, unsigned int time = 0);
 
 #endif
