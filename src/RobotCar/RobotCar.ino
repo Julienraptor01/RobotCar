@@ -84,8 +84,8 @@ void setSpeedRight(int speedRight)
 void stopMotors()
 {
 	digitalWrite(MOTORS_LEFT_FORWARD, LOW);
-	digitalWrite(MOTORS_LEFT_BACKWARD, LOW);
 	digitalWrite(MOTORS_RIGHT_FORWARD, LOW);
+	digitalWrite(MOTORS_LEFT_BACKWARD, LOW);
 	digitalWrite(MOTORS_RIGHT_BACKWARD, LOW);
 }
 
@@ -96,7 +96,7 @@ void stopMotors()
  * @param speed The speed to move straight
  * @return void
  */
-void straight(int speed, int time)
+void straight(int speed, unsigned int time)
 {
 	switch (speed >= 0)
 	{
@@ -116,3 +116,32 @@ void straight(int speed, int time)
 	stopMotors();
 }
 
+/**
+ * @author Julienraptor01
+ * @brief Rotate the robot on itself
+ * @param direction The direction to rotate
+ * @param speed The speed to rotate
+ * @param time The time to rotate
+ * @return void
+ */
+void rotate(bool direction, unsigned int speed, unsigned int time)
+{
+	switch (direction)
+	{
+	case LEFT:
+		digitalWrite(MOTORS_LEFT_FORWARD, LOW);
+		digitalWrite(MOTORS_RIGHT_BACKWARD, LOW);
+		digitalWrite(MOTORS_LEFT_BACKWARD, HIGH);
+		digitalWrite(MOTORS_RIGHT_FORWARD, HIGH);
+		break;
+	case RIGHT:
+		break;
+		digitalWrite(MOTORS_LEFT_BACKWARD, LOW);
+		digitalWrite(MOTORS_RIGHT_FORWARD, LOW);
+		digitalWrite(MOTORS_LEFT_FORWARD, HIGH);
+		digitalWrite(MOTORS_RIGHT_BACKWARD, HIGH);
+	}
+	setSpeed(speed, speed);
+	delay(time);
+	stopMotors();
+}
