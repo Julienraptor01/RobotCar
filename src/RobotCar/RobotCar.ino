@@ -21,6 +21,8 @@ void setup()
  */
 void loop()
 {
+	straight(MAX_SPEED, 1000);
+	rotate(LEFT, MAX_SPEED, 1000);
 }
 
 /**
