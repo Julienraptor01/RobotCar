@@ -1,5 +1,7 @@
 #include "RobotCar.h"
 
+#include <IRremote.h>
+
 /**
  * @author Julienraptor01
  * @brief First called function
@@ -21,8 +23,47 @@ void setup()
  */
 void loop()
 {
-	straight(MAX_SPEED, 1000);
-	rotate(LEFT, MAX_SPEED, 1000);
+	if (IrReceiver.decode())
+	{
+		Serial.println(IrReceiver.decodedIRData.command, HEX);
+		switch (IrReceiver.decodedIRData.command)
+		{
+		case IR_REMOTE_OK:
+			currentState = STOP;
+			break;
+		case IR_REMOTE_UP:
+			currentState = FORWARD;
+			break;
+		case IR_REMOTE_DOWN:
+			currentState = BACKWARD;
+			break;
+		case IR_REMOTE_LEFT:
+			currentState = LEFTWARD;
+			break;
+		case IR_REMOTE_RIGHT:
+			currentState = RIGHTWARD;
+			break;
+		}
+		IrReceiver.resume();
+	}
+	switch (currentState)
+	{
+	case STOP:
+		stopMotors();
+		break;
+	case FORWARD:
+		straight(MAX_SPEED, 1000);
+		break;
+	case BACKWARD:
+		straight(-MAX_SPEED, 1000);
+		break;
+	case LEFTWARD:
+		rotate(LEFT, MAX_SPEED, 1000);
+		break;
+	case RIGHTWARD:
+		rotate(RIGHT, MAX_SPEED, 1000);
+		break;
+	}
 }
 
 /**
@@ -41,6 +82,8 @@ void initPins()
 
 	pinMode(MOTORS_RIGHT_FORWARD, OUTPUT);
 	pinMode(MOTORS_RIGHT_BACKWARD, OUTPUT);
+
+	IrReceiver.begin(IR_REMOTE_PIN, ENABLE_LED_FEEDBACK);
 }
 
 /**
